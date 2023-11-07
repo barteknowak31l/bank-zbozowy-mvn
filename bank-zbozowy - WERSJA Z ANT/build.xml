@@ -1,0 +1,49 @@
+﻿<project name="bank-zbozowy" default="compile">
+
+	<path id="dist.cp">
+		<path refid="lib.cp" />
+		<pathelement location="dist/bank.jar"/>
+	</path>
+
+	<path id="Jetty.cp">
+		<fileset dir="../Jetty"/>
+	</path>
+	<path id="lib.cp">
+		<pathelement location="lib/freemarker.jar"/>
+		<pathelement location="lib/servlet-api-2.5.jar"/>
+		<path refid="Jetty.cp"/>
+	</path>
+
+	<target name="init">
+		<echo message="Inicjalizacja projektu ${ant.project.name}." />
+		<mkdir dir="bin"/>
+		<mkdir dir="dist"/>
+	</target>
+	<target name="compile" depends="init">
+		<echo message="Kompilacja kodu projektu ${ant.project.name}." />
+		<javac srcdir="src" destdir="bin" includeantruntime="false" encoding="utf-8" 
+			classpathref="lib.cp" />
+
+	</target>
+	<target name="copy" depends="init">
+		<echo message="Kopiowanie zawartosci statycznej projektu ${ant.project.name}." />
+		<copy todir="bin"><fileset dir="res"/></copy>
+	</target>
+	<target name="dist" depends="compile,copy,init">
+		<echo message="Przygotowanie pliku jar do dystrybucji projektu ${ant.project.name}." />
+		<jar destfile="dist/bank.jar"><fileset dir="bin"/></jar>
+	</target>
+	<target name="clean">
+		<echo message="Usuwanie plikow binarnych projektu ${ant.project.name}." />
+		<delete dir="bin"/>
+	</target>
+	<target name="clean-all" depends="clean">
+		<echo message="Usuwanie wszystkich plików wykonywalnych projektu ${ant.project.name}." />
+		<delete dir="dist"/>
+	</target>
+	<target name="run">
+		<echo message="Uruchamianie projektu ${ant.project.name}." />
+		<echo message="* uruchom klase put.io.selenium.atm.SimpleServer" />
+		<java classname="put.io.selenium.atm.SimpleServer" classpathref="dist.cp"/>
+	</target>
+</project>
